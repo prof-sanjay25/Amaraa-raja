@@ -12,16 +12,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-np$)+#3^8stjf)h%y6#s6(2wo!0r77jzs_+ep_d^(44ror^-bt'
 
-DEBUG = True
+# ----------------- DEPLOYMENT SETTINGS -----------------
+DEBUG = True   # ⚠️ Set to False in production for security
 
 ALLOWED_HOSTS = [
+    'tasktracking-robolog2020.pythonanywhere.com',  # PythonAnywhere domain
     'localhost',
     '127.0.0.1',
     '::1',
-    '192.168.1.10',
-    '192.168.1.177',
-    'sanjay05.pythonanywhere.com'  # <-- Replace with your actual LAN IP address here
 ]
+# -------------------------------------------------------
 
 print("LOADING SETTINGS FROM:", __file__)
 
@@ -75,11 +75,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'backend.urls'
 
-# ----------------- UPDATED HERE --------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],    # <------ THIS LINE IS IMPORTANT!
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,7 +90,6 @@ TEMPLATES = [
         },
     },
 ]
-# ---------------------------------------------------
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
@@ -103,53 +101,44 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 STATIC_URL = 'static/'
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ----------- SESSION SETTINGS -----------
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_SAVE_EVERY_REQUEST = False   # Only update session if explicitly done in view
-SESSION_COOKIE_AGE = 1209600         # 2 weeks (in seconds), change as you want
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
 # ----------------------------------------
 
+# ----------- MEDIA SETTINGS -------------
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+# ----------------------------------------
 
 AUTHENTICATION_BACKENDS = [
     'authentication.auth_backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-
+# ----------- JWT SETTINGS ---------------
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),   # token valid for 30 min
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),      # refresh valid for 7 days
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
+# ----------------------------------------
