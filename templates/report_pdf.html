@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ task_type|default:"Service Report" }}</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11px;
+      margin: 18px 35px 16px 35px;
+      color: #222;
+    }
+    .main-title {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      color: #38404a;
+      letter-spacing: 1px;
+    }
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      background: #f7f6fb;
+      table-layout: fixed;
+    }
+    .meta-table td {
+      border: 1px solid #ebe9f2;
+      padding: 2px 5px;
+      font-size: 10px;
+      word-break: break-word;
+    }
+    .meta-table .label {
+      background: #edeaf6;
+      font-weight: bold;
+      color: #3d365c;
+      text-align: left;
+      width: 70px;
+      font-size: 11px;
+    }
+    .meta-table .value {
+      font-size: 9px !important;
+    }
+    .twocol {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .col {
+      flex: 1;
+      min-width: 180px;
+      max-width: 50%;
+    }
+    .section-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 7px;
+      background: #fff;
+      table-layout: fixed;
+    }
+    .section-table th, .section-table td {
+      border: 1px solid #d2d0e2;
+      padding: 4px 6px;
+      font-size: 10.5px;
+      vertical-align: top;
+      min-width: 90px;
+      word-break: break-word;
+    }
+    .section-header {
+      background: #3d365c;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 4px 6px;
+      letter-spacing: .7px;
+      text-align: left;
+      border-radius: 3px 3px 0 0;
+      border-bottom: 1px solid #bbb;
+    }
+    .section-header.alt {
+      background: #8464ff;
+    }
+    .section-header.general {
+      background: #9074c1;
+    }
+    /* Image Section */
+    .image-section {
+      margin-top: 25px;
+      page-break-before: always;
+    }
+    .image-label-header {
+      font-size: 15px;
+      color: #3d365c;
+      font-weight: bold;
+      margin-bottom: 8px;
+      margin-left: 2px;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+    .img-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 8px 6px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .img-table td {
+      padding: 4px;
+      background: #f8f7fc;
+      border-radius: 9px;
+      box-shadow: 0 1px 2px #ececec;
+      vertical-align: top;
+      width: 47%;
+    }
+    .img-table img {
+      max-width: 230px;
+      max-height: 150px;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+      background: #fff;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .img-label {
+      font-size: 10px;
+      color: #5637ad;
+      font-weight: 600;
+      margin-top: 5px;
+      display: block;
+      text-align: center;
+    }
+    @media print {
+      body { margin: 5mm 8mm; }
+      .twocol { display: flex; }
+      .img-table td { width: 49%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-title">{{ task_type|default:"Service Report" }}</div>
+  <table class="meta-table">
+    <tr>
+      <td class="label">State</td>
+      <td class="value">{{ state }}</td>
+      <td class="label">Cluster</td>
+      <td class="value">{{ cluster_name }}</td>
+      <td class="label">Site Name</td>
+      <td class="value">{{ site_name }}</td>
+      <td class="label">Global ID</td>
+      <td class="value">{{ global_id }}</td>
+    </tr>
+    <tr>
+      <td class="label">Engineer</td>
+      <td class="value">{{ employee_name }}</td>
+      <td class="label">Assigned Date</td>
+      <td class="value">{{ assigned_date }}</td>
+      <td class="label">Submitted</td>
+      <td class="value">{{ submitted_at }}</td>
+      <td class="label">Approved</td>
+      <td class="value">{{ approved_at }}</td>
+    </tr>
+  </table>
+
+  <div class="twocol">
+    <!-- LEFT COLUMN -->
+    <div class="col">
+      {% if form_data.Engine_Details %}
+      <table class="section-table">
+        <tr><th colspan="2" class="section-header">Engine Details</th></tr>
+        {% for row in form_data.Engine_Details %}
+        <tr>
+          <th>{{ row.label }}</th>
+          <td>{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      {% if form_data.Alternator_Details %}
+      <table class="section-table">
+        <tr><th colspan="2" class="section-header alt">Alternator Details</th></tr>
+        {% for row in form_data.Alternator_Details %}
+        <tr>
+          <th>{{ row.label }}</th>
+          <td>{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      {% if form_data.Engine_Check_Points %}
+      <table class="section-table">
+        <tr><th colspan="2" class="section-header">Engine Check Points</th></tr>
+        {% for row in form_data.Engine_Check_Points %}
+        <tr>
+          <th>{{ row.label }}</th>
+          <td>{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      {% if form_data.Alternator_Check_Points %}
+      <table class="section-table">
+        <tr><th colspan="2" class="section-header alt">Alternator Check Points</th></tr>
+        {% for row in form_data.Alternator_Check_Points %}
+        <tr>
+          <th>{{ row.label }}</th>
+          <td>{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col">
+      {% if form_data.General_Check_Points %}
+      <table class="section-table">
+        <tr><th colspan="2" class="section-header general">General Check Points</th></tr>
+        {% for row in form_data.General_Check_Points %}
+        <tr>
+          <th>{{ row.label }}</th>
+          <td>{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if files %}
+  <div class="image-section">
+    <div class="image-label-header">Uploaded Documents</div>
+    <table class="img-table">
+      <tr>
+      {% for file in files %}
+        <td>
+          <img src="{{ file.url }}" alt="{{ file.label }}"><br>
+          <span class="img-label">{{ file.label }}</span>
+        </td>
+        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+      </tr><tr>
+        {% endif %}
+      {% endfor %}
+      </tr>
+    </table>
+  </div>
+  {% endif %}
+</body>
+</html>
