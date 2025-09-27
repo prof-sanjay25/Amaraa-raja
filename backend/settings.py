@@ -22,7 +22,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '::1',
     '192.168.1.177', 
-    '10.221.162.123', # <-- your LAN IP for local testing
+    '10.221.162.123',
+    '.onrender.com'# <-- your LAN IP for local testing
 ]
 # -------------------------------------------------------
 
