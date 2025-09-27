@@ -1,0 +1,21 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite DB
+db.sqlite3
+
+# Media uploads
+/media/
+
+# Virtual environments
+venv/
+.env/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
