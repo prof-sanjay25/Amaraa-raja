@@ -1,0 +1,348 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ report_title|default:"Field Service Report" }}</title>
+  <style>
+    @page { margin: 0.5in; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 9px;
+      color: #1f2937;
+      line-height: 1.4;
+      background: #ffffff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px;
+      color: white;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+      text-align: center;
+      position: relative;
+    }
+    .header-logo {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 80px;
+    }
+    .header-logo img {
+      max-height: 40px;
+      max-width: 70px;
+      filter: brightness(0) invert(1);
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 16px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+    .meta-table td {
+      padding: 6px 8px;
+      font-size: 9px;
+      border: 1px solid #e5e7eb;
+      vertical-align: middle;
+    }
+    .meta-table .label {
+      background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+      color: #ffffff;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8px;
+      text-align: center;
+    }
+
+    .twocol-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 12px 0;
+      margin-top: 0;
+    }
+    .twocol-table td {
+      width: 50%;
+      vertical-align: top;
+      border: none;
+      padding: 0;
+    }
+
+    .section {
+      width: 100%;
+      background: #fff;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 8px;
+      page-break-inside: avoid;
+      overflow: hidden;
+    }
+    .section-header {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 8px;
+      text-transform: uppercase;
+      text-align: center;
+      border-bottom: 1px solid #059669;
+    }
+    .section-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .section-table th,
+    .section-table td {
+      padding: 6px 8px;
+      font-size: 8px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+    }
+    .section-table th {
+      background: #f8fafc;
+      width: 42%;
+      text-align: left;
+      font-weight: 700;
+    }
+    .section-table td {
+      background: #fff;
+    }
+    .section-table tr:last-child th,
+    .section-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .photos-signature-page {
+      page-break-before: always;
+      padding-top: 20px;
+    }
+    .page-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .img-grid-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 12px;
+    }
+    .img-grid-table td {
+      width: 50%;
+      vertical-align: top;
+      border: none;
+      padding: 0;
+    }
+    .img-box {
+      background: #fff;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+    }
+    .img-box img {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 4px;
+    }
+    .img-label {
+      margin-top: 6px;
+      font-size: 8px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .employee-signature-section {
+      margin-top: 20px;
+      text-align: right;
+      page-break-inside: avoid;
+    }
+    .employee-signature-block {
+      display: inline-block;
+      border: 2px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      min-width: 200px;
+      min-height: 80px;
+      background: #fff;
+    }
+    .employee-signature-block img {
+      max-height: 60px;
+      margin-bottom: 6px;
+    }
+    .employee-signature-line {
+      height: 40px;
+      border-bottom: 2px solid #374151;
+      margin-bottom: 6px;
+    }
+    .employee-signature-label {
+      font-size: 9px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .employee-signature-date {
+      font-size: 8px;
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    @media print {
+      body {
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <div class="header">
+      {% if logo_url %}
+        <div class="header-logo">
+          <img src="{{ logo_url }}" alt="Company Logo">
+        </div>
+      {% endif %}
+      <h1 class="title">{{ report_title|default:"Field Service Report" }}</h1>
+    </div>
+
+    <!-- META INFO -->
+    <table class="meta-table">
+      <tr>
+        <td class="label">circle</td>
+        <td>{{ circle|default:"-" }}</td>
+        <td class="label">Cluster</td>
+        <td>{{ cluster_name|default:"-" }}</td>
+        <td class="label">Site Name</td>
+        <td>{{ site_name|default:"-" }}</td>
+        <td class="label">Global ID</td>
+        <td>{{ global_id|default:"-" }}</td>
+      </tr>
+      <tr>
+        <td class="label">Engineer</td>
+        <td>{{ employee_name|default:"-" }}</td>
+        <td class="label">Task Type</td>
+        <td>{{ task_type|default:"-" }}</td>
+        <td class="label">Assigned Date</td>
+        <td>{{ assigned_date|default:"-" }}</td>
+        <td class="label">Planned Date</td>
+        <td>{{ planned_date|default:"-" }}</td>
+      </tr>
+      <tr>
+        <td class="label">Submitted</td>
+        <td>{{ submitted_at|default:"-" }}</td>
+        <td class="label">Approved</td>
+        <td>{{ approved_at|default:"-" }}</td>
+        <td class="label">Status</td>
+        <td><strong>{{ status|default:"-" }}</strong></td>
+        <td class="label">Report ID</td>
+        <td><strong>{{ report_id|default:"-" }}</strong></td>
+      </tr>
+    </table>
+
+    <!-- REPORT DATA -->
+    {% if left_sections or right_sections %}
+    <table class="twocol-table">
+      <tr>
+        <td>
+          {% if left_sections %}
+            {% for section_name, rows in left_sections %}
+              <div class="section">
+                <div class="section-header">{{ section_name|title }}</div>
+                <table class="section-table">
+                  {% for row in rows %}
+                    <tr>
+                      <th>{{ row.label }}</th>
+                      <td>{{ row.value|default:"-" }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </td>
+        <td>
+          {% if right_sections %}
+            {% for section_name, rows in right_sections %}
+              <div class="section">
+                <div class="section-header">{{ section_name|title }}</div>
+                <table class="section-table">
+                  {% for row in rows %}
+                    <tr>
+                      <th>{{ row.label }}</th>
+                      <td>{{ row.value|default:"-" }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+    {% endif %}
+
+    <!-- PHOTOS + SIGNATURE -->
+    {% if files %}
+      <div class="photos-signature-page">
+        <h2 class="page-title">Field Photos</h2>
+        <table class="img-grid-table">
+          {% for file in files %}
+            {% if forloop.counter0|divisibleby:2 %}<tr>{% endif %}
+              <td>
+                <div class="img-box">
+                  <img src="{{ file.url }}" alt="{{ file.label }}">
+                  <div class="img-label">{{ file.label|default:"Document" }}</div>
+                </div>
+              </td>
+            {% if forloop.counter|divisibleby:2 or forloop.last %}
+              {% if not forloop.counter|divisibleby:2 and forloop.last %}
+                <td></td>
+              {% endif %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </table>
+
+        <div class="employee-signature-section">
+          <div class="employee-signature-block">
+            {% if employee_signature %}
+              <img src="{{ employee_signature }}" alt="Employee Signature">
+            {% else %}
+              <div class="employee-signature-line"></div>
+            {% endif %}
+            <div class="employee-signature-label">{{ employee_name|default:"Employee" }}</div>
+            <div class="employee-signature-date">
+              Date: {{ submitted_at|default:"___________" }}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div style="page-break-after: always;"></div>
+</body>
+</html>

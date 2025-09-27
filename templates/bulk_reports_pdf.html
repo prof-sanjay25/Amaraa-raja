@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bulk Reports Export</title>
+  <style>
+    @page { margin: 0.5in; size: A4; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 9px; }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>
+  {% for report in reports %}
+    {% if not forloop.first %}
+      <div class="page-break"></div>
+    {% endif %}
+
+    <!-- Instead of re-including <html>/<body>, extract only BODY from report_pdf.html -->
+    <div class="report-wrapper">
+      {% include "report_pdf.html" with 
+        report_title=report.report_title
+        service_type=report.service_type
+        task_type=report.task_type
+        task_id=report.task_id
+        report_id=report.report_id
+        global_id=report.global_id
+        site_name=report.site_name
+        cluster_name=report.cluster_name
+        employee_name=report.employee_name
+        assigned_date=report.assigned_date
+        planned_date=report.planned_date
+        submitted_at=report.submitted_at
+        approved_at=report.approved_at
+        status=report.status
+        left_sections=report.left_sections
+        right_sections=report.right_sections
+        files=report.files
+        circle=report.stacirclete
+        logo_url=report.logo_url
+        employee_signature=report.employee_signature
+        admin_signature=report.admin_signature
+      %}
+    </div>
+  {% endfor %}
+</body>
+</html>
