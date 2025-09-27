@@ -17,13 +17,14 @@ SECRET_KEY = 'django-insecure-np$)+#3^8stjf)h%y6#s6(2wo!0r77jzs_+ep_d^(44ror^-bt
 DEBUG = True   # ⚠️ Set to False in production for security
 
 ALLOWED_HOSTS = [
+    '*',
     'tasktracking-robolog2020.pythonanywhere.com',  # for deployment
     'localhost',
     '127.0.0.1',
     '::1',
     '192.168.1.177', 
     '10.221.162.123',
-    '.onrender.com'# <-- your LAN IP for local testing
+    '.onrender.com',# <-- your LAN IP for local testing
 ]
 # -------------------------------------------------------
 
